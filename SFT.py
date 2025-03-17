@@ -4,7 +4,7 @@ import math
 import time
 import torch
 import torch.nn as nn
-import torch.optim
+import torch.optim as optim
 from torch.utils.data import DataLoader
 from contextlib import nullcontext
 from transformers import AutoTokenizer
@@ -22,12 +22,17 @@ def train_epoch(epoch, wandb):
 
     start_time = time.time()  # 记录训练开始时间
     
+
     for step, (X, Y, loss_mask) in enumerate(train_loader):
         X = X.to(args.device)
         Y = Y.to(args.device)
         loss_mask = loss_mask.to(args.device)
 
+        
         lr = get_lr(epoch * iter_per_epoch + step, args.epochs * iter_per_epoch, args.learning_rate)
+        
+        
+
         #更细优化器学习率
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
@@ -51,6 +56,7 @@ def train_epoch(epoch, wandb):
 
             scaler.step(optimizer) # 执行优化步骤
             scaler.update() # 更新缩放器
+            # scheduler.step()
             optimizer.zero_grad(set_to_none=True) # 清空梯度
 
         # 每隔一定步数记录一次日志
@@ -173,7 +179,7 @@ if __name__=='__main__':
     # 梯度缩放器 用于混合精度训练
     # scaler = torch.cuda.amp.GradScaler(enabled = (args.dtype in ['float16', 'bfloat16']))
     scaler = torch.amp.GradScaler(enabled=(args.dtype in ['float16', 'bfloat16']))
-    # 优化器
+    
     optimizer = torch.optim.AdamW(model.parameters(), lr = args.learning_rate)
 
     # 每个epoch的迭代次数

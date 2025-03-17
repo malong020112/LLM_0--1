@@ -74,8 +74,8 @@ class Attention(nn.Module):
         self.head_dim = args.dim // args.n_heads # 每个头的维度
 
         self.wq = nn.Linear(args.dim, args.n_heads * self.head_dim, bias = False)
-        self.wk = nn.Linear(args.dim, args.n_heads * self.head_dim, bias = False)
-        self.wv = nn.Linear(args.dim, args.n_heads * self.head_dim, bias = False)
+        self.wk = nn.Linear(args.dim, args.n_kv_heads * self.head_dim, bias = False)
+        self.wv = nn.Linear(args.dim, args.n_kv_heads * self.head_dim, bias = False)
 
         self.wo = nn.Linear(args.n_heads * self.head_dim, args.dim, bias = False)
         #注意力和残差的dropout

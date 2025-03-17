@@ -26,6 +26,7 @@ def init_model(args):
      # 重命名键
      new_state_dict = {}
      
+     
      #### 适配SFT_1024训练出来的模型
      for k, v in state_dict.items():
           if k == "tok_embeddings.weight":
@@ -34,6 +35,7 @@ def init_model(args):
                new_state_dict[k] = v
      state_dict = new_state_dict
      ####
+     
 
      model.load_state_dict({k: v for k, v in state_dict.items() if 'mask' not in k}, strict=True)
 
